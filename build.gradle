@@ -1,0 +1,52 @@
+buildscript {
+
+    ext.projectVersion = version
+    ext.projectName = 'shield'
+    ext.projectGroup = 'io.skerna.libs'
+    ext.projectDesc = 'Shield: Url jwk provider keycloack'
+    ext.projectHost = 'gitlab'
+    ext.projectOrg = 'skerna'
+    ext.projectLicense = 'MIT'
+    ext.projectDevelNick = 'skerna'
+    ext.projectDevelName = 'skerna'
+    ext.projectInceptionYear = 2019
+
+
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrog_version"
+    }
+}
+
+
+
+subprojects {
+    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
+    apply from: "$rootProject.projectDir/gradle/publish.gradle"
+
+    repositories {
+        mavenCentral()
+        jcenter()
+                maven {
+            url "${artifactory_contextUrl}/libs-snapshot-local"
+            credentials {
+                username "${artifactory_user}"
+                password "${artifactory_password}"
+            }
+        }
+    }
+
+    plugins.withId("java-library") {
+        test {
+            useJUnitPlatform()
+            testLogging {
+                events "STARTED", "PASSED", "FAILED", "SKIPPED"
+            }
+        }
+    }
+    
+}
+
+

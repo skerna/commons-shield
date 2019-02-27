@@ -1,0 +1,52 @@
+image: gradle:alpine
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_STRATEGY: clone
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  GRADLE_USER_HOME: .gradle
+
+stages:
+- build
+- deploy
+
+before_script:
+  - mkdir -p $GRADLE_USER_HOME
+  - echo "artifactory_user=$artifactory_user" >> $GRADLE_USER_HOME/gradle.properties
+  - echo "artifactory_password=$artifactory_password" >> $GRADLE_USER_HOME/gradle.properties
+  - echo "artifactory_contextUrl=$artifactory_contextUrl" >> $GRADLE_USER_HOME/gradle.properties
+
+# COMPILE
+
+build:
+  only:
+    - tags
+  stage: build
+  script:
+    # Compilar snapshot
+    - gradle build -Psnapshot
+    # Compilar release
+    - gradle build -Prelease
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - $GRADLE_USER_HOME
+
+
+deploy:
+  only:
+    - tags
+  stage: deploy
+  script:
+    # Publicar release
+    - gradle artifactoryPublish -Prelease
+    # Publicar snapshot
+    - gradle artifactoryPublish -Psnapshot
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - $GRADLE_USER_HOME

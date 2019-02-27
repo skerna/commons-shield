@@ -1,0 +1,30 @@
+def pomConfig = {
+    licenses {
+        license {
+            name "The MIT License"
+            url "http://opensource.org/licenses/MIT"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id projectDevelNick
+            name projectDevelName
+        }
+    }
+
+    scm {
+        url "https://gitlab.com/r2b/olibs/sec4j.git"
+    }
+}
+
+def withPom = { pom ->
+    pom.withXml {
+        def root = asNode()
+        root.appendNode('description', projectDesc)
+        root.appendNode('url', 'https://gitlab.com/r2b/olibs/jwks4j')
+        root.children().last() + pomConfig
+    }
+}
+
+ext.withPom = withPom

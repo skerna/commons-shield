@@ -1,0 +1,3 @@
+[submodule "ext/scribejava"]
+	path = ext/scribejava
+	url = https://github.com/scribejava/scribejava.git

@@ -1,0 +1,26 @@
+apply plugin: "maven-publish"
+apply plugin: "com.jfrog.artifactory"
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+    publish {
+        repository {
+            String repo = version.endsWith('SNAPSHOT') ? 'libs-snapshot-local' : 'libs-release-local'
+            repoKey = repo // The Artifactory repository key to publish to
+            username = "${artifactory_user}" // The publisher user name
+            password = "${artifactory_password}" // The publisher password
+        }
+        defaults {
+            // Reference to Gradle publications defined in the build script.
+            // This is how we tell the Artifactory Plugin which artifacts should be
+            // published to Artifactory.
+            publications('jvm','js','metadata','kotlinMultiplatform')
+            publishArtifacts = true
+            // Properties to be attached to the published artifacts.
+            properties = ['qa.level': 'basic'   ,'dev.team' : 'R2B core']
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
+
+}

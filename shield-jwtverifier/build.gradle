@@ -1,0 +1,19 @@
+plugins{
+    id 'java-library'
+}
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Internal usage
+    implementation "com.google.guava:guava:$guava_version"
+    api "io.jsonwebtoken:jjwt-api:$jjwt_version"
+    implementation "io.jsonwebtoken:jjwt-impl:$jjwt_version"
+    implementation "io.jsonwebtoken:jjwt-jackson:$jjwt_version"
+
+    api project(":shield-jwks")
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}

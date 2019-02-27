@@ -1,0 +1,24 @@
+plugins {
+    id 'java-library'
+}
+
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api "com.github.scribejava:scribejava-apis:$scribejava_version"
+    api "com.github.scribejava:scribejava-core:$scribejava_version"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.0'
+
+}
+test {
+    useJUnitPlatform()
+}

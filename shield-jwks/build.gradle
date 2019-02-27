@@ -1,0 +1,28 @@
+plugins{
+    id 'java-library'
+}
+
+dependencies {
+    api "commons-codec:commons-codec:$ccodes_version"
+    api "commons-io:commons-io:$comonsio_vesion"
+    api "com.google.guava:guava:$guava_version"
+    api "org.json:json:$json_version"
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5_version")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5_version")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
+    testImplementation "org.mockito:mockito-core:$mockito_version"
+    testImplementation "org.mockito:mockito-junit-jupiter:$mockito_version"
+    testImplementation "org.hamcrest:hamcrest-library:$hamcrest_version"
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "STARTED", "PASSED", "FAILED", "SKIPPED"
+    }
+}

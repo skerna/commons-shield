@@ -1,0 +1,9 @@
+//enableFeaturePreview('IMPROVED_POM_SUPPORT')
+
+rootProject.name = 'skerna-shield'
+
+
+include 'shield-jwks'
+include 'shield-jwtresolver'
+include 'shield-jwtverifier'
+

@@ -2,7 +2,7 @@ buildscript {
 
     ext.projectVersion = version
     ext.projectName = 'shield'
-    ext.projectGroup = 'io.skerna.libs'
+    ext.projectGroup = 'io.skerna.commons'
     ext.projectDesc = 'Shield: Url jwk provider keycloack'
     ext.projectHost = 'gitlab'
     ext.projectOrg = 'skerna'
@@ -20,9 +20,9 @@ buildscript {
     }
 }
 
+apply plugin: "base"
 
-
-subprojects {
+allprojects {
     configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
     apply from: "$rootProject.projectDir/gradle/publish.gradle"
 
@@ -45,8 +45,28 @@ subprojects {
                 events "STARTED", "PASSED", "FAILED", "SKIPPED"
             }
         }
+        publishing {
+            publications {
+                maven(MavenPublication) {
+                    groupId project.group
+                    artifactId project.name
+                    version project.version
+
+                    from components.java
+                }
+            }
+        }
     }
-    
 }
+
+["assemble","build","clean","publishToMavenLocal"].forEach{ taskName ->
+    tasks.getByName(taskName){ newTask->
+        subprojects.forEach{ subproject->
+            newTask.dependsOn(":$subproject.name:$taskName")
+        }
+    }
+}
+
+
 
 

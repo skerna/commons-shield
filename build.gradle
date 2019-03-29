@@ -20,9 +20,8 @@ buildscript {
     }
 }
 
-apply plugin: "base"
 
-allprojects {
+subprojects {
     configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
     apply from: "$rootProject.projectDir/gradle/publish.gradle"
 
@@ -60,12 +59,13 @@ allprojects {
 }
 
 ["assemble","build","clean","publishToMavenLocal"].forEach{ taskName ->
-    tasks.getByName(taskName){ newTask->
+    tasks.create(taskName){ newTask->
         subprojects.forEach{ subproject->
             newTask.dependsOn(":$subproject.name:$taskName")
         }
     }
 }
+
 
 
 

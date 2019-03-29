@@ -17,10 +17,6 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-library:$hamcrest_version"
 }
 
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 test {
     useJUnitPlatform()
     testLogging {

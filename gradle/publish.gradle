@@ -42,7 +42,6 @@ void publish(){
         }
     }
 
-    apply from: "https://gitlab.com/r2b/build/artifactory/raw/master/plugin-4j.gradle"
 
 }
 

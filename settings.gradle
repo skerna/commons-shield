@@ -1,6 +1,6 @@
 //enableFeaturePreview('IMPROVED_POM_SUPPORT')
 
-rootProject.name = 'skerna-shield'
+rootProject.name = 'commons-shield'
 
 
 include 'shield-jwks'

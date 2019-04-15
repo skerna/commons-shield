@@ -93,14 +93,14 @@ Este modulo permite utilizar los modulos existentes en un entorno de desarrollo 
 <dependency>
     <groupId>io.r2b.olibs.jwks4j</groupId>
     <artifactId>jwks-rsa</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-compile(group: 'io.r2b.olibs.jwks4j', name: 'jwks-rsa', version: '1.0.0-SNAPSHOT')
+compile(group: 'io.r2b.olibs.jwks4j', name: 'jwks-rsa', version: '0.1.0')
 ```
 
 

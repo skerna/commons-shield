@@ -2,7 +2,7 @@ buildscript {
 
     ext.projectVersion = version
     ext.projectName = 'shield'
-    ext.projectGroup = 'io.skerna.commons'
+    ext.projectGroup = 'com.gitlab.skerna.libs'
     ext.projectDesc = 'Shield: Url jwk provider keycloack'
     ext.projectHost = 'gitlab'
     ext.projectOrg = 'skerna'

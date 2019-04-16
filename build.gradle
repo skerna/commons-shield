@@ -1,58 +1,39 @@
 buildscript {
-
-    ext.projectVersion = version
-    ext.projectName = 'shield'
-    ext.projectGroup = 'com.gitlab.skerna.libs'
-    ext.projectDesc = 'Shield: Url jwk provider keycloack'
-    ext.projectHost = 'gitlab'
-    ext.projectOrg = 'skerna'
-    ext.projectLicense = 'MIT'
-    ext.projectDevelNick = 'skerna'
-    ext.projectDevelName = 'skerna'
-    ext.projectInceptionYear = 2019
-
-
     repositories {
         jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$jfrog_version"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
     }
 }
 
-
 subprojects {
-    configurations.all { resolutionStrategy.cacheChangingModulesFor 0, 'seconds' }
-    apply from: "$rootProject.projectDir/gradle/publish.gradle"
-
+    apply plugin: "java-library"
+    apply plugin: "com.jfrog.bintray"
     repositories {
         mavenCentral()
         jcenter()
-        maven { url "https://jitpack.io" }
+        maven { url  "https://dl.bintray.com/skerna/maven" }
     }
 
     plugins.withId("java-library") {
+
         test {
             useJUnitPlatform()
             testLogging {
                 events "STARTED", "PASSED", "FAILED", "SKIPPED"
             }
         }
-        publishing {
-            publications {
-                maven(MavenPublication) {
-                    groupId project.group
-                    artifactId project.name
-                    version project.version
 
-                    from components.java
-                }
-            }
-        }
     }
+    apply from: project.rootProject.file("gradle/publish.gradle")
+
 }
 
-["assemble","build","clean","publishToMavenLocal"].forEach{ taskName ->
+["assemble","build","clean"].forEach{ taskName ->
     tasks.create(taskName){ newTask->
         subprojects.forEach{ subproject->
             newTask.dependsOn(":$subproject.name:$taskName")

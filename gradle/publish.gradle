@@ -1,47 +1,58 @@
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply from: "$rootProject.projectDir/gradle/pom-descriptor.gradle"
+apply plugin: 'com.jfrog.bintray'
+
+apply from: project.rootProject.file('gradle/maven-central.gradle')
+
+task stubJavadoc(type: Jar) {
+    archiveClassifier = 'javadoc'
+}
 
 
-pluginManager.withPlugin("java-library") {
-    publish()
-}
-pluginManager.withPlugin("kotlin-platform-js") {
-    publish()
-}
-pluginManager.withPlugin("kotlin-platform-common") {
-    publish()
-}
-// Generate
-void publish(){
-    task sourceJar(type: Jar, dependsOn: classes) {
-        classifier 'sources'
-        from sourceSets.main.allSource
+publishing {
+    publications.all {
+        pom.withXml(configureMavenCentralMetadata)
     }
-    task emptyJar(type: Jar) {
-        classifier 'javadoc'
-    }
+    publications {
+        maven(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version project.version
 
-    publishing {
-        publications {
-            mavenProject(MavenPublication) {
-                from components.java
-                groupId project.group
-                artifactId project.name
-                version project.version
-
-                artifact sourceJar {
-                    classifier 'sources'
-                }
-
-                artifact emptyJar {
-                    classifier 'javadoc'
-                }
-
-                withPom(pom)
-            }
+            from components.java
         }
     }
-
-
 }
 
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    override = true // for multi-platform Kotlin/Native publishing
+    configurations = ['archives']
+    pkg {
+        repo = bintrayRepo
+        name = bintrayName
+        userOrg = bringrayOrg
+        desc = libraryDescription
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        dryRun = false
+        override = true
+        publicDownloadNumbers = true
+        version {
+            desc = libraryDescription
+        }
+    }
+}
+// TODO :kludge this is required for K/N publishing
+bintrayUpload.dependsOn publishToMavenLocal
+
+// This is for easier debugging of bintray uploading problems
+bintrayUpload.doFirst {
+    publications = project.publishing.publications.findAll { !it.name.contains('-test') }.collect {
+        println("Uploading artifact '$it.groupId:$it.artifactId:$it.version' from publication '$it.name'")
+        it.name
+    }
+}

@@ -1,0 +1,47 @@
+apply plugin: 'maven-publish'
+apply from: "$rootProject.projectDir/gradle/pom-descriptor.gradle"
+
+
+pluginManager.withPlugin("java-library") {
+    publish()
+}
+pluginManager.withPlugin("kotlin-platform-js") {
+    publish()
+}
+pluginManager.withPlugin("kotlin-platform-common") {
+    publish()
+}
+// Generate
+void publish(){
+    task sourceJar(type: Jar, dependsOn: classes) {
+        classifier 'sources'
+        from sourceSets.main.allSource
+    }
+    task emptyJar(type: Jar) {
+        classifier 'javadoc'
+    }
+
+    publishing {
+        publications {
+            mavenProject(MavenPublication) {
+                from components.java
+                groupId project.group
+                artifactId project.name
+                version project.version
+
+                artifact sourceJar {
+                    classifier 'sources'
+                }
+
+                artifact emptyJar {
+                    classifier 'javadoc'
+                }
+
+                withPom(pom)
+            }
+        }
+    }
+
+
+}
+
